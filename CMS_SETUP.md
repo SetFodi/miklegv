@@ -10,7 +10,7 @@ The private studio is available at `/admin`. It uses Supabase for passwordless a
 
    ```sql
    insert into public.site_admins (email)
-   values ('MIKLE_EMAIL_HERE')
+   values (lower('MIKLE_EMAIL_HERE'))
    on conflict (email) do nothing;
    ```
 

@@ -336,12 +336,14 @@ function AdminApp() {
       }
 
       setAuthState('checking')
-      const { data: admin } = await client
+      const signedInEmail = data.session.user.email ?? ''
+      const { data: admins } = await client
         .from('site_admins')
         .select('email')
-        .eq('email', data.session.user.email ?? '')
-        .maybeSingle()
-      setAuthState(admin ? 'authorized' : 'unauthorized')
+      const isAllowed = admins?.some(
+        (admin) => admin.email.toLowerCase() === signedInEmail.toLowerCase(),
+      )
+      setAuthState(isAllowed ? 'authorized' : 'unauthorized')
     }
 
     checkUser()

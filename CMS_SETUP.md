@@ -5,7 +5,7 @@ The private studio is available at `/admin`. It uses Supabase for passwordless a
 ## One-time setup
 
 1. Create a Supabase project.
-2. Apply `supabase/migrations/20260816000000_initial_mikle_studio.sql` using the Supabase GitHub integration, CLI, or SQL editor.
+2. Apply every SQL file in `supabase/migrations` in filename order using the Supabase GitHub integration, CLI, or SQL editor.
 3. In the SQL editor, grant Mikle access with the following command, replacing the example address with his actual email. Do not commit his private email to this public repository.
 
    ```sql

@@ -143,13 +143,31 @@ function SignIn({ onSent }: { onSent: (email: string) => void }) {
     if (!supabase) return
     setBusy(true)
     setError('')
+
+    const normalizedEmail = email.trim().toLowerCase()
+    const { data: isAllowed, error: accessError } = await supabase.rpc('is_studio_email_allowed', {
+      candidate_email: normalizedEmail,
+    })
+
+    if (accessError) {
+      setBusy(false)
+      setError('The doorman is taking a hydration break. Try again in a moment.')
+      return
+    }
+
+    if (!isAllowed) {
+      setBusy(false)
+      setError('That email isn’t on the guest list. Nice try, mystery nutritionist.')
+      return
+    }
+
     const { error: authError } = await supabase.auth.signInWithOtp({
-      email,
+      email: normalizedEmail,
       options: { emailRedirectTo: `${window.location.origin}/admin` },
     })
     setBusy(false)
     if (authError) setError(authError.message)
-    else onSent(email)
+    else onSent(normalizedEmail)
   }
 
   return (

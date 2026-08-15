@@ -56,6 +56,14 @@ alter table public.site_admins enable row level security;
 alter table public.videos enable row level security;
 alter table public.site_settings enable row level security;
 
+-- Use explicit Data API grants so automatic table exposure can remain disabled.
+grant usage on schema public to anon, authenticated;
+revoke all privileges on table public.site_admins, public.videos, public.site_settings from anon, authenticated;
+grant select on table public.site_admins to authenticated;
+grant select on table public.videos, public.site_settings to anon, authenticated;
+grant insert, update, delete on table public.videos to authenticated;
+grant insert, update on table public.site_settings to authenticated;
+
 drop policy if exists "Admin can confirm own access" on public.site_admins;
 create policy "Admin can confirm own access"
 on public.site_admins for select

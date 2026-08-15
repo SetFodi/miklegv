@@ -19,8 +19,10 @@ The private studio is available at `/admin`. It uses Supabase for passwordless a
 
    ```env
    VITE_SUPABASE_URL=https://YOUR_PROJECT.supabase.co
-   VITE_SUPABASE_ANON_KEY=YOUR_PUBLIC_ANON_KEY
+   VITE_SUPABASE_PUBLISHABLE_KEY=sb_publishable_YOUR_KEY
    ```
+
+   Use the browser-safe publishable key, never a secret or legacy `service_role` key. The app still accepts the legacy `VITE_SUPABASE_ANON_KEY` name as a temporary fallback for older projects.
 
 6. Restart the development server or redeploy the site.
 

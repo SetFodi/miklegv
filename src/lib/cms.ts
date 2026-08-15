@@ -2,12 +2,14 @@ import { createClient } from '@supabase/supabase-js'
 import type { SiteBrand, VideoItem } from '../data'
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL as string | undefined
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY as string | undefined
+const supabasePublishableKey = (
+  import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY ?? import.meta.env.VITE_SUPABASE_ANON_KEY
+) as string | undefined
 
-export const isCmsConfigured = Boolean(supabaseUrl && supabaseAnonKey)
+export const isCmsConfigured = Boolean(supabaseUrl && supabasePublishableKey)
 
 export const supabase = isCmsConfigured
-  ? createClient(supabaseUrl!, supabaseAnonKey!, {
+  ? createClient(supabaseUrl!, supabasePublishableKey!, {
       auth: {
         persistSession: true,
         autoRefreshToken: true,

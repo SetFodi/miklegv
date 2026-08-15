@@ -125,7 +125,7 @@ function SetupRequired() {
         </p>
         <div className="setup-keys">
           <code>VITE_SUPABASE_URL</code>
-          <code>VITE_SUPABASE_ANON_KEY</code>
+          <code>VITE_SUPABASE_PUBLISHABLE_KEY</code>
         </div>
         <a href="/">← Return to the website</a>
       </div>

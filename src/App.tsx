@@ -839,10 +839,14 @@ function App() {
 
         <div className="pillar-ticker" aria-hidden="true">
           <div className="ticker-track">
-            {[...t.ticker, ...t.ticker].map((item, index) => (
-              <span key={`${item}-${index}`}>
-                {item}<i>✦</i>
-              </span>
+            {[0, 1].map((group) => (
+              <div className="ticker-group" key={group}>
+                {t.ticker.map((item, index) => (
+                  <span key={`${group}-${item}-${index}`}>
+                    {item}<i>✦</i>
+                  </span>
+                ))}
+              </div>
             ))}
           </div>
         </div>

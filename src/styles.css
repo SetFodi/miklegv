@@ -11,8 +11,8 @@
   --moss: #9da67b;
   --line-dark: rgba(23, 56, 46, 0.2);
   --line-light: rgba(255, 253, 247, 0.2);
-  --font-display: 'Newsreader Variable', 'Iowan Old Style', 'Baskerville', serif;
-  --font-body: 'Manrope Variable', 'Avenir Next', sans-serif;
+  --font-display: 'Syne Variable', 'Avenir Next', sans-serif;
+  --font-body: 'Outfit Variable', 'Avenir Next', sans-serif;
   --page-pad: clamp(1.25rem, 3.4vw, 4rem);
   color: var(--ink);
   font-family: var(--font-body);

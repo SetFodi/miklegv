@@ -6,10 +6,12 @@
   --studio-sun: #e6b64f;
   --studio-clay: #c87350;
   --studio-line: rgba(19, 47, 39, 0.17);
+  --studio-font-display: 'Syne Variable', 'Avenir Next', sans-serif;
+  --studio-font-body: 'Outfit Variable', 'Avenir Next', sans-serif;
   min-height: 100svh;
   background: var(--studio-paper);
   color: var(--studio-ink);
-  font-family: 'Manrope Variable', sans-serif;
+  font-family: var(--studio-font-body);
 }
 
 .studio-shell * {
@@ -56,7 +58,7 @@
 }
 
 .studio-logo strong {
-  font-family: 'Newsreader Variable', serif;
+  font-family: var(--studio-font-display);
   font-size: 1.3rem;
   font-weight: 520;
   letter-spacing: -0.02em;
@@ -85,7 +87,7 @@
 
 .studio-gate h1 {
   margin: 1.1rem 0 1.5rem;
-  font-family: 'Newsreader Variable', serif;
+  font-family: var(--studio-font-display);
   font-size: clamp(3rem, 7vw, 5.8rem);
   font-weight: 430;
   letter-spacing: -0.055em;
@@ -153,7 +155,7 @@
   border-radius: 0;
   background: #fffdf7;
   color: var(--studio-ink);
-  font: 500 0.88rem/1.5 'Manrope Variable', sans-serif;
+  font: 500 0.88rem/1.5 var(--studio-font-body);
   letter-spacing: 0;
   text-transform: none;
 }
@@ -166,7 +168,7 @@
   border-radius: 0;
   background: #fffdf7;
   color: var(--studio-ink);
-  font: 500 0.88rem/1.5 'Manrope Variable', sans-serif;
+  font: 500 0.88rem/1.5 var(--studio-font-body);
   letter-spacing: 0;
   text-transform: none;
 }
@@ -421,7 +423,7 @@
 
 .studio-header h1 {
   margin: 0.45rem 0 0;
-  font-family: 'Newsreader Variable', serif;
+  font-family: var(--studio-font-display);
   font-size: clamp(2.8rem, 5vw, 5.5rem);
   font-weight: 430;
   letter-spacing: -0.055em;
@@ -477,7 +479,7 @@
 .studio-section-intro h2 {
   max-width: 48rem;
   margin: 0.7rem 0 0;
-  font-family: 'Newsreader Variable', serif;
+  font-family: var(--studio-font-display);
   font-size: clamp(2rem, 3.4vw, 3.8rem);
   font-weight: 450;
   letter-spacing: -0.045em;
@@ -529,7 +531,7 @@
 .studio-video-copy h3 {
   margin: 0.5rem 0 0.2rem;
   overflow: hidden;
-  font-family: 'Newsreader Variable', serif;
+  font-family: var(--studio-font-display);
   font-size: clamp(1.35rem, 2vw, 2rem);
   font-weight: 500;
   letter-spacing: -0.035em;
@@ -609,7 +611,7 @@
 
 .studio-editor-title h2 {
   margin: 0.4rem 0 0;
-  font-family: 'Newsreader Variable', serif;
+  font-family: var(--studio-font-display);
   font-size: clamp(2rem, 3.5vw, 4rem);
   font-weight: 450;
   letter-spacing: -0.045em;
@@ -695,7 +697,7 @@
   grid-template-columns: 3rem 1fr auto;
   align-items: center;
   cursor: pointer;
-  font-family: 'Newsreader Variable', serif;
+  font-family: var(--studio-font-display);
   font-size: clamp(1.5rem, 2.3vw, 2.4rem);
   font-weight: 480;
   letter-spacing: -0.03em;
@@ -707,13 +709,13 @@
 }
 
 .studio-content-editor summary > span {
-  font-family: 'Manrope Variable', sans-serif;
+  font-family: var(--studio-font-body);
   font-size: 0.58rem;
   letter-spacing: 0;
 }
 
 .studio-content-editor summary i {
-  font-family: 'Manrope Variable', sans-serif;
+  font-family: var(--studio-font-body);
   font-size: 1rem;
   font-style: normal;
   transition: transform 200ms ease;
@@ -754,13 +756,13 @@
   display: flex;
   align-items: center;
   gap: 0.8rem;
-  font-family: 'Newsreader Variable', serif;
+  font-family: var(--studio-font-display);
   font-size: 1.7rem;
   font-weight: 480;
 }
 
 .studio-pillar-editor h3 span {
-  font-family: 'Manrope Variable', sans-serif;
+  font-family: var(--studio-font-body);
   font-size: 0.58rem;
 }
 
@@ -843,7 +845,7 @@
 .studio-account-card h3 {
   margin: 1.2rem 0 0.6rem;
   overflow-wrap: anywhere;
-  font-family: 'Newsreader Variable', serif;
+  font-family: var(--studio-font-display);
   font-size: clamp(1.7rem, 3vw, 3rem);
   font-weight: 470;
   letter-spacing: -0.04em;

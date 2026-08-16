@@ -24,18 +24,26 @@ export type SiteBrand = {
   logoUrl: string
   profileImageUrl: string
   instagramUrl: string
+  instagramHandle: string
   displayName: string
   displayNameKa: string
+  wordmark: string
+  wordmarkKa: string
   location: string
+  locationKa: string
 }
 
 export const defaultBrand: SiteBrand = {
   logoUrl: '/images/mikle-mark.png',
   profileImageUrl: '/images/mikle-profile.jpg',
   instagramUrl: 'https://www.instagram.com/mikle.hyw/',
+  instagramHandle: '@mikle.hyw',
   displayName: 'Mikle Gvianidze',
   displayNameKa: 'მაიკლ გვიანიძე',
+  wordmark: 'MIKLE',
+  wordmarkKa: 'მაიკლ',
   location: 'Hawai‘i / Georgia',
+  locationKa: 'ჰავაი / საქართველო',
 }
 
 export const defaultVideos: VideoItem[] = [

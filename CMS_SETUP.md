@@ -42,7 +42,8 @@ An email must exist under Supabase **Authentication → Users** before password 
 - Upload MP4/WebM videos that use the site’s native player.
 - Upload or replace thumbnails.
 - Save drafts, publish videos, feature a video in the homepage hero, choose language and duration, reorder, edit, or delete.
-- Edit homepage, system, library, biography, credentials, six pillars, closing message, and disclaimer in English and Georgian.
-- Replace the logo and profile photograph and edit his display name, location, and Instagram URL.
+- Edit every visible public-site label and message in English and Georgian: navigation, preloader, hero, buttons, ticker, system, library, video player, biography, credentials, six pillars, closing section, footer, and disclaimer.
+- Edit browser/search metadata and accessibility labels without touching code.
+- Replace the logo and profile photograph and edit his display names, short wordmarks, bilingual locations, Instagram handle, and Instagram URL.
 
 Only email addresses present in `public.site_admins` can sign in to the Studio or mutate content. Password reset requests are checked against the same allowlist before an email is sent. Public visitors can only read published content.

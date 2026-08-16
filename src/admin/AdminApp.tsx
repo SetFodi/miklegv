@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState, type FormEvent } from 'react'
-import { defaultCopy, type Copy, type PillarKey } from '../App'
+import { defaultCopy, mergeCopyWithDefaults, type Copy, type PillarKey } from '../App'
 import { defaultBrand, defaultVideos, type Language, type SiteBrand, type VideoItem } from '../data'
 import { isCmsConfigured, loadSiteConfig, supabase, uploadMedia } from '../lib/cms'
 import './admin.css'
@@ -25,39 +25,92 @@ const emptyVideo: VideoItem = {
 
 const contentSections = [
   {
+    title: 'Navigation & language',
+    fields: [
+      ['nav.system', 'Health system link', false],
+      ['nav.notes', 'Video library link', false],
+      ['nav.story', 'About link', false],
+      ['nav.follow', 'Instagram button', false],
+      ['nav.menu', 'Mobile menu label', false],
+      ['ui.englishShort', 'English switch label', false],
+      ['ui.georgianShort', 'Georgian switch label', false],
+    ],
+  },
+  {
+    title: 'Opening preloader',
+    fields: [
+      ['preloader.brandLine', 'Top-left brand line', false],
+      ['preloader.systemLine', 'Top-right system line', false],
+      ['preloader.kicker', 'Small center line', false],
+      ['preloader.title', 'Main preloader statement — line breaks supported', true],
+      ['preloader.progress', 'Progress caption', false],
+      ['preloader.complete', 'Completion value', false],
+      ['preloader.ariaLabel', 'Screen-reader loading label', false],
+    ],
+  },
+  {
     title: 'Homepage introduction',
     fields: [
       ['hero.eyebrow', 'Small heading', false],
-      ['hero.titleStart', 'Headline — first line', false],
+      ['hero.titleStart', 'Headline — opening words', false],
       ['hero.titleEmphasis', 'Headline — highlighted words', false],
-      ['hero.titleEnd', 'Headline — final line', false],
+      ['hero.titleEnd', 'Headline — optional final words', false],
       ['hero.body', 'Introduction', true],
+      ['hero.explore', 'Explore button', false],
+      ['hero.watch', 'Watch button', false],
+      ['hero.marker', 'Scroll prompt', false],
+      ['hero.figureTop', 'Featured-card label', false],
+      ['hero.figureAction', 'Featured-card play label', false],
     ],
   },
   {
     title: 'Health system',
     fields: [
+      ['system.number', 'Section number', false],
       ['system.eyebrow', 'Small heading', false],
       ['system.title', 'Section title', false],
       ['system.body', 'Section introduction', true],
+      ['ticker', 'Moving topics — one per line', true],
+      ['system.select', 'Pillar selector instruction', false],
+      ['system.focus', 'Selected-pillar label', false],
+      ['system.practice', 'Practical-tip label', false],
+      ['system.previous', 'Previous button description', false],
+      ['system.next', 'Next button description', false],
     ],
   },
   {
     title: 'Video library',
     fields: [
+      ['notes.number', 'Section number', false],
       ['notes.eyebrow', 'Small heading', false],
       ['notes.title', 'Section title', false],
       ['notes.body', 'Section introduction', true],
+      ['notes.watch', 'Video-card action', false],
+      ['ui.reelLabel', 'Instagram media label', false],
+      ['ui.videoLabel', 'Uploaded media label', false],
+    ],
+  },
+  {
+    title: 'Video player',
+    fields: [
+      ['player.nowWatching', 'Player heading', false],
+      ['player.close', 'Close-button description', false],
+      ['player.unsupported', 'Unsupported-browser message', true],
+      ['player.viewInstagram', 'Instagram fallback link', false],
     ],
   },
   {
     title: 'About Mikle',
     fields: [
+      ['story.number', 'Section number', false],
       ['story.eyebrow', 'Small heading', false],
       ['story.title', 'Section title', false],
       ['story.quote', 'Pull quote', true],
       ['story.body', 'Biography', true],
+      ['story.credentials', 'Credentials heading', false],
       ['story.credentialsList', 'Credentials — one per line', true],
+      ['story.portraitLabel', 'Portrait label', false],
+      ['story.portraitAlt', 'Portrait accessibility description', true],
     ],
   },
   {
@@ -66,13 +119,29 @@ const contentSections = [
       ['close.eyebrow', 'Small heading', false],
       ['close.title', 'Closing title', true],
       ['close.body', 'Closing text', true],
+      ['close.follow', 'Instagram button', false],
+      ['close.top', 'Back-to-top link', false],
     ],
   },
   {
     title: 'Footer and disclaimer',
     fields: [
       ['footer', 'Footer phrase', false],
+      ['ui.footerSocial', 'Social-network label', false],
+      ['ui.studioLabel', 'Studio link label', false],
       ['disclaimer', 'Educational disclaimer', true],
+    ],
+  },
+  {
+    title: 'Search, sharing & accessibility',
+    fields: [
+      ['seo.title', 'Browser and search title', false],
+      ['seo.description', 'Search description', true],
+      ['seo.socialDescription', 'Social-share description', true],
+      ['ui.skipToContent', 'Skip-link label', false],
+      ['ui.primaryNavigation', 'Navigation accessibility label', false],
+      ['ui.selectLanguage', 'Language-switcher accessibility label', false],
+      ['ui.backToTop', 'Logo-link accessibility label', false],
     ],
   },
 ] as const
@@ -628,8 +697,8 @@ function AdminApp() {
       loadSiteConfig<Record<Language, Copy>>(),
     ]).then(([videoResult, config]) => {
       if (videoResult.data?.length) setVideos(videoResult.data as VideoItem[])
-      if (config?.copy) setCopy(config.copy)
-      if (config?.brand) setBrand(config.brand)
+      if (config?.copy) setCopy(mergeCopyWithDefaults(config.copy))
+      if (config?.brand) setBrand({ ...defaultBrand, ...config.brand })
     })
   }, [authState])
 
@@ -806,7 +875,7 @@ function AdminApp() {
               ))}
 
               <details>
-                <summary><span>07</span>The six pillars<i>+</i></summary>
+                <summary><span>{String(contentSections.length + 1).padStart(2, '0')}</span>The six pillars<i>+</i></summary>
                 <div className="studio-pillar-editor">
                   {pillarKeys.map((key, index) => (
                     <div key={key}>
@@ -860,7 +929,11 @@ function AdminApp() {
               <div className="studio-brand-fields">
                 <label>Display name — English<input value={brand.displayName} onChange={(event) => setBrand((current) => ({ ...current, displayName: event.target.value }))} /></label>
                 <label>Display name — Georgian<input value={brand.displayNameKa ?? ''} onChange={(event) => setBrand((current) => ({ ...current, displayNameKa: event.target.value }))} /></label>
-                <label>Location line<input value={brand.location} onChange={(event) => setBrand((current) => ({ ...current, location: event.target.value }))} /></label>
+                <label>Short wordmark — English<input value={brand.wordmark} onChange={(event) => setBrand((current) => ({ ...current, wordmark: event.target.value }))} /></label>
+                <label>Short wordmark — Georgian<input value={brand.wordmarkKa} onChange={(event) => setBrand((current) => ({ ...current, wordmarkKa: event.target.value }))} /></label>
+                <label>Location — English<input value={brand.location} onChange={(event) => setBrand((current) => ({ ...current, location: event.target.value }))} /></label>
+                <label>Location — Georgian<input value={brand.locationKa} onChange={(event) => setBrand((current) => ({ ...current, locationKa: event.target.value }))} /></label>
+                <label>Instagram handle<input value={brand.instagramHandle} onChange={(event) => setBrand((current) => ({ ...current, instagramHandle: event.target.value }))} placeholder="@mikle.hyw" /></label>
                 <label>Instagram profile URL<input type="url" value={brand.instagramUrl} onChange={(event) => setBrand((current) => ({ ...current, instagramUrl: event.target.value }))} /></label>
               </div>
             </div>

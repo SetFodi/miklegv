@@ -7,6 +7,38 @@ export type PillarKey = 'nutrition' | 'sleep' | 'movement' | 'light' | 'stress' 
 
 export type Copy = {
   nav: { system: string; notes: string; story: string; follow: string; menu: string }
+  preloader: {
+    ariaLabel: string
+    brandLine: string
+    systemLine: string
+    kicker: string
+    title: string
+    progress: string
+    complete: string
+  }
+  ui: {
+    skipToContent: string
+    primaryNavigation: string
+    selectLanguage: string
+    englishShort: string
+    georgianShort: string
+    backToTop: string
+    reelLabel: string
+    videoLabel: string
+    footerSocial: string
+    studioLabel: string
+  }
+  seo: {
+    title: string
+    description: string
+    socialDescription: string
+  }
+  player: {
+    nowWatching: string
+    close: string
+    unsupported: string
+    viewInstagram: string
+  }
   hero: {
     eyebrow: string
     titleStart: string
@@ -17,9 +49,6 @@ export type Copy = {
     watch: string
     marker: string
     figureTop: string
-    figureTitle: string
-    figureBody: string
-    figureNote: string
     figureAction: string
   }
   ticker: string[]
@@ -83,19 +112,48 @@ export const defaultCopy: Record<Language, Copy> = {
       follow: 'Follow on Instagram',
       menu: 'Menu',
     },
+    preloader: {
+      ariaLabel: 'Preparing Mikle Health',
+      brandLine: 'MIKLE / WHOLE HEALTH',
+      systemLine: '06 PILLARS · 01 SYSTEM',
+      kicker: 'Nourish · Move · Recover',
+      title: 'Nourishing the\nwhole system.',
+      progress: 'Health is connected.',
+      complete: '100',
+    },
+    ui: {
+      skipToContent: 'Skip to content',
+      primaryNavigation: 'Primary navigation',
+      selectLanguage: 'Select language',
+      englishShort: 'EN',
+      georgianShort: 'ქარ',
+      backToTop: 'Back to top',
+      reelLabel: 'Reel',
+      videoLabel: 'Video',
+      footerSocial: 'Instagram',
+      studioLabel: 'Studio',
+    },
+    seo: {
+      title: 'Mikle — Health as a system',
+      description: 'Mikle Gvianidze explores nutrition, sleep, movement, light, stress, and recovery as one connected system.',
+      socialDescription: 'Practical, bilingual health education for stronger everyday living.',
+    },
+    player: {
+      nowWatching: 'Now watching',
+      close: 'Close player',
+      unsupported: 'Your browser cannot play this video.',
+      viewInstagram: 'View on Instagram ↗',
+    },
     hero: {
       eyebrow: 'A field guide to everyday health',
-      titleStart: 'Health isn’t a',
-      titleEmphasis: 'checklist.',
-      titleEnd: 'It’s a living system.',
-      body: 'Clear ideas on nutrition, sleep, movement, light, stress, and recovery—made useful in English and Georgian.',
+      titleStart: 'Health works',
+      titleEmphasis: 'as a system.',
+      titleEnd: '',
+      body: 'Practical ideas for stronger nutrition, sleep, movement, and recovery—in English and Georgian.',
       explore: 'Explore the system',
       watch: 'Watch the latest note',
       marker: 'Scroll to explore',
       figureTop: 'Field note / 002',
-      figureTitle: 'What does it mean to actually live healthy?',
-      figureBody: 'Eating clean and training hard are only pieces of the whole. The real work is learning how they connect.',
-      figureNote: '02:17 · English',
       figureAction: 'Play video',
     },
     ticker: ['Nutrition', 'Sleep', 'Movement', 'Light', 'Stress', 'Recovery'],
@@ -199,7 +257,7 @@ export const defaultCopy: Record<Language, Copy> = {
         'Creating in English & Georgian',
       ],
       portraitAlt: 'Portrait placeholder for Mikle Gvianidze',
-      portraitLabel: 'Mikle Gvianidze · Hawai‘i / Georgia',
+      portraitLabel: 'Portrait / 01',
     },
     close: {
       eyebrow: 'Learn in public. Grow together.',
@@ -219,19 +277,48 @@ export const defaultCopy: Record<Language, Copy> = {
       follow: 'გამომყევი Instagram-ზე',
       menu: 'მენიუ',
     },
+    preloader: {
+      ariaLabel: 'მაიკლის ჯანმრთელობის გვერდი იტვირთება',
+      brandLine: 'მაიკლი / სრული ჯანმრთელობა',
+      systemLine: '06 საყრდენი · 01 სისტემა',
+      kicker: 'იკვებე · იმოძრავე · აღდგი',
+      title: 'ვკვებავთ\nმთელ სისტემას.',
+      progress: 'ჯანმრთელობა კავშირშია.',
+      complete: '100',
+    },
+    ui: {
+      skipToContent: 'გადადით მთავარ შინაარსზე',
+      primaryNavigation: 'მთავარი ნავიგაცია',
+      selectLanguage: 'აირჩიეთ ენა',
+      englishShort: 'EN',
+      georgianShort: 'ქარ',
+      backToTop: 'დასაწყისში დაბრუნება',
+      reelLabel: 'Reel',
+      videoLabel: 'ვიდეო',
+      footerSocial: 'Instagram',
+      studioLabel: 'სტუდია',
+    },
+    seo: {
+      title: 'მაიკლი — ჯანმრთელობა როგორც სისტემა',
+      description: 'მაიკლ გვიანიძე კვებას, ძილს, მოძრაობას, სინათლეს, სტრესსა და აღდგენას ერთ მთლიან სისტემად განიხილავს.',
+      socialDescription: 'პრაქტიკული, ორენოვანი ჯანმრთელობის განათლება ყოველდღიური ცხოვრების გასაუმჯობესებლად.',
+    },
+    player: {
+      nowWatching: 'ახლა უყურებ',
+      close: 'დახურვა',
+      unsupported: 'თქვენი ბრაუზერი ვიდეოს ვერ აჩვენებს.',
+      viewInstagram: 'Instagram-ზე ნახვა ↗',
+    },
     hero: {
       eyebrow: 'ყოველდღიური ჯანმრთელობის გზამკვლევი',
       titleStart: 'ჯანმრთელობა',
-      titleEmphasis: 'ჩამონათვალი არ არის.',
-      titleEnd: 'ის ცოცხალი სისტემაა.',
-      body: 'მარტივი და პრაქტიკული იდეები კვებაზე, ძილზე, მოძრაობაზე, სინათლეზე, სტრესსა და აღდგენაზე — ქართულად და ინგლისურად.',
+      titleEmphasis: 'ერთი სისტემაა.',
+      titleEnd: '',
+      body: 'პრაქტიკული იდეები კვებაზე, ძილზე, მოძრაობასა და აღდგენაზე — ქართულად და ინგლისურად.',
       explore: 'გაიცანი სისტემა',
       watch: 'ნახე ბოლო ჩანაწერი',
       marker: 'ჩამოსქროლე',
       figureTop: 'ჩანაწერი / 002',
-      figureTitle: 'რას ნიშნავს სინამდვილეში ჯანსაღად ცხოვრება?',
-      figureBody: 'სწორი კვება და ვარჯიში მთლიანის მხოლოდ ნაწილია. მთავარი მათი კავშირის დანახვაა.',
-      figureNote: '02:17 · ინგლისურად',
       figureAction: 'ვიდეოს ნახვა',
     },
     ticker: ['კვება', 'ძილი', 'მოძრაობა', 'სინათლე', 'სტრესი', 'აღდგენა'],
@@ -335,7 +422,7 @@ export const defaultCopy: Record<Language, Copy> = {
         'ქმნის ქართულ და ინგლისურ ენებზე',
       ],
       portraitAlt: 'მაიკლ გვიანიძის ფოტოს ადგილი',
-      portraitLabel: 'მაიკლ გვიანიძე · ჰავაი / საქართველო',
+      portraitLabel: 'პორტრეტი / 01',
     },
     close: {
       eyebrow: 'ვისწავლოთ საჯაროდ. გავიზარდოთ ერთად.',
@@ -347,6 +434,59 @@ export const defaultCopy: Record<Language, Copy> = {
     disclaimer: 'მასალა მხოლოდ საგანმანათლებლო მიზნებისთვისაა და არ წარმოადგენს სამედიცინო რჩევას, დიაგნოზს ან მკურნალობას.',
     footer: 'შექმნილია გრძელვადიანი გზისთვის.',
   },
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return Boolean(value) && typeof value === 'object' && !Array.isArray(value)
+}
+
+function mergeDefined<T>(defaults: T, stored: unknown): T {
+  if (Array.isArray(defaults)) {
+    return (Array.isArray(stored) ? stored : defaults) as T
+  }
+
+  if (isRecord(defaults)) {
+    if (!isRecord(stored)) return defaults
+    const merged: Record<string, unknown> = { ...defaults }
+    Object.entries(defaults).forEach(([key, defaultValue]) => {
+      merged[key] = mergeDefined(defaultValue, stored[key])
+    })
+    return merged as T
+  }
+
+  return (stored === undefined || stored === null ? defaults : stored) as T
+}
+
+export function mergeCopyWithDefaults(stored: unknown): Record<Language, Copy> {
+  const merged = mergeDefined(defaultCopy, stored)
+
+  if (
+    merged.en.hero.titleStart === 'Health isn’t a'
+    && merged.en.hero.titleEmphasis === 'checklist.'
+    && merged.en.hero.titleEnd === 'It’s a living system.'
+  ) {
+    merged.en.hero.titleStart = defaultCopy.en.hero.titleStart
+    merged.en.hero.titleEmphasis = defaultCopy.en.hero.titleEmphasis
+    merged.en.hero.titleEnd = defaultCopy.en.hero.titleEnd
+  }
+  if (merged.en.hero.body === 'Clear ideas on nutrition, sleep, movement, light, stress, and recovery—made useful in English and Georgian.') {
+    merged.en.hero.body = defaultCopy.en.hero.body
+  }
+
+  if (
+    merged.ka.hero.titleStart === 'ჯანმრთელობა'
+    && merged.ka.hero.titleEmphasis === 'ჩამონათვალი არ არის.'
+    && merged.ka.hero.titleEnd === 'ის ცოცხალი სისტემაა.'
+  ) {
+    merged.ka.hero.titleStart = defaultCopy.ka.hero.titleStart
+    merged.ka.hero.titleEmphasis = defaultCopy.ka.hero.titleEmphasis
+    merged.ka.hero.titleEnd = defaultCopy.ka.hero.titleEnd
+  }
+  if (merged.ka.hero.body === 'მარტივი და პრაქტიკული იდეები კვებაზე, ძილზე, მოძრაობაზე, სინათლეზე, სტრესსა და აღდგენაზე — ქართულად და ინგლისურად.') {
+    merged.ka.hero.body = defaultCopy.ka.hero.body
+  }
+
+  return merged
 }
 
 const pillarKeys: PillarKey[] = ['nutrition', 'sleep', 'movement', 'light', 'stress', 'recovery']
@@ -380,13 +520,15 @@ function Monogram({
   logoUrl = defaultBrand.logoUrl,
   label = defaultBrand.displayName,
   wordmark = 'MIKLE',
+  backToTop = 'Back to top',
 }: {
   logoUrl?: string
   label?: string
   wordmark?: string
+  backToTop?: string
 }) {
   return (
-    <a className="monogram" href="#top" aria-label={`${label}, back to top`}>
+    <a className="monogram" href="#top" aria-label={`${label}, ${backToTop}`}>
       <img src={logoUrl} alt="" />
       <span>{wordmark}</span>
     </a>
@@ -395,14 +537,14 @@ function Monogram({
 
 type PreloaderPhase = 'visible' | 'leaving' | 'hidden'
 
-function SitePreloader({ phase, logoUrl }: { phase: PreloaderPhase; logoUrl: string }) {
+function SitePreloader({ phase, logoUrl, copy }: { phase: PreloaderPhase; logoUrl: string; copy: Copy['preloader'] }) {
   if (phase === 'hidden') return null
 
   return (
-    <div className={`site-preloader is-${phase}`} role="status" aria-label="Preparing Mikle Health">
+    <div className={`site-preloader is-${phase}`} role="status" aria-label={copy.ariaLabel}>
       <div className="preloader-topline">
-        <span>MIKLE / WHOLE HEALTH</span>
-        <span>06 PILLARS · 01 SYSTEM</span>
+        <span>{copy.brandLine}</span>
+        <span>{copy.systemLine}</span>
       </div>
 
       <div className="preloader-center">
@@ -419,15 +561,19 @@ function SitePreloader({ phase, logoUrl }: { phase: PreloaderPhase; logoUrl: str
         </div>
 
         <div className="preloader-copy">
-          <span>Nourish · Move · Recover</span>
-          <strong>Feeding the<br />whole system.</strong>
+          <span>{copy.kicker}</span>
+          <strong>
+            {copy.title.split('\n').map((line, index) => (
+              <span key={`${line}-${index}`}>{line}{index < copy.title.split('\n').length - 1 && <br />}</span>
+            ))}
+          </strong>
         </div>
       </div>
 
       <div className="preloader-progress" aria-hidden="true">
-        <span>Health is connected.</span>
+        <span>{copy.progress}</span>
         <div><i /></div>
-        <b>100</b>
+        <b>{copy.complete}</b>
       </div>
     </div>
   )
@@ -467,6 +613,12 @@ function App() {
   const localizedDisplayName = language === 'ka'
     ? brand.displayNameKa || defaultBrand.displayNameKa
     : brand.displayName
+  const localizedWordmark = language === 'ka'
+    ? brand.wordmarkKa || defaultBrand.wordmarkKa
+    : brand.wordmark
+  const localizedLocation = language === 'ka'
+    ? brand.locationKa || defaultBrand.locationKa
+    : brand.location
   const featuredTitle = language === 'ka' ? featuredVideo.title_ka : featuredVideo.title_en
   const featuredDescription = language === 'ka' ? featuredVideo.description_ka : featuredVideo.description_en
 
@@ -520,8 +672,8 @@ function App() {
     Promise.all([loadSiteConfig<Record<Language, Copy>>(), loadPublishedVideos()])
       .then(([config, publishedVideos]) => {
         if (cancelled) return
-        if (config?.copy) setSiteCopy(config.copy)
-        if (config?.brand) setBrand(config.brand)
+        if (config?.copy) setSiteCopy(mergeCopyWithDefaults(config.copy))
+        if (config?.brand) setBrand({ ...defaultBrand, ...config.brand })
         if (publishedVideos.length) setVideos(publishedVideos)
       })
       .catch((error) => {
@@ -532,6 +684,25 @@ function App() {
       cancelled = true
     }
   }, [])
+
+  useEffect(() => {
+    document.title = t.seo.title
+    document.querySelector('meta[name="description"]')?.setAttribute('content', t.seo.description)
+    document.querySelector('meta[property="og:title"]')?.setAttribute('content', t.seo.title)
+    document.querySelector('meta[property="og:description"]')?.setAttribute('content', t.seo.socialDescription)
+
+    const absoluteProfileImage = new URL(brand.profileImageUrl, window.location.origin).href
+    let socialImage = document.querySelector<HTMLMetaElement>('meta[property="og:image"]')
+    if (!socialImage) {
+      socialImage = document.createElement('meta')
+      socialImage.setAttribute('property', 'og:image')
+      document.head.appendChild(socialImage)
+    }
+    socialImage.setAttribute('content', absoluteProfileImage)
+
+    document.querySelectorAll<HTMLLinkElement>('link[rel="icon"], link[rel="shortcut icon"], link[rel="apple-touch-icon"]')
+      .forEach((link) => link.setAttribute('href', brand.logoUrl))
+  }, [brand.logoUrl, brand.profileImageUrl, t.seo])
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24)
@@ -561,12 +732,12 @@ function App() {
 
   return (
     <>
-      <SitePreloader phase={preloaderPhase} logoUrl={brand.logoUrl} />
+      <SitePreloader phase={preloaderPhase} logoUrl={brand.logoUrl} copy={t.preloader} />
       <div className={`site-shell ${preloaderPhase === 'hidden' ? 'is-ready' : 'is-preloading'}`} id="top">
-      <a className="skip-link" href="#main">Skip to content</a>
+      <a className="skip-link" href="#main">{t.ui.skipToContent}</a>
 
       <header className={`site-header ${scrolled ? 'is-scrolled' : ''}`}>
-        <Monogram logoUrl={brand.logoUrl} label={localizedDisplayName} wordmark={language === 'ka' ? 'მაიკლ' : 'MIKLE'} />
+        <Monogram logoUrl={brand.logoUrl} label={localizedDisplayName} wordmark={localizedWordmark} backToTop={t.ui.backToTop} />
 
         <button
           className="menu-button"
@@ -579,21 +750,21 @@ function App() {
           <MenuIcon open={menuOpen} />
         </button>
 
-        <nav id="site-navigation" className={menuOpen ? 'is-open' : ''} aria-label="Primary navigation">
+        <nav id="site-navigation" className={menuOpen ? 'is-open' : ''} aria-label={t.ui.primaryNavigation}>
           <a href="#system" onClick={closeMenu}>{t.nav.system}</a>
           <a href="#notes" onClick={closeMenu}>{t.nav.notes}</a>
           <a href="#story" onClick={closeMenu}>{t.nav.story}</a>
         </nav>
 
         <div className="header-actions">
-          <div className="language-switcher" aria-label="Select language">
+          <div className="language-switcher" aria-label={t.ui.selectLanguage}>
             <button
               className={language === 'en' ? 'is-active' : ''}
               type="button"
               onClick={() => setLanguage('en')}
               aria-pressed={language === 'en'}
             >
-              EN
+              {t.ui.englishShort}
             </button>
             <span>/</span>
             <button
@@ -602,7 +773,7 @@ function App() {
               onClick={() => setLanguage('ka')}
               aria-pressed={language === 'ka'}
             >
-              ქარ
+              {t.ui.georgianShort}
             </button>
           </div>
           <a className="header-follow" href={brand.instagramUrl} target="_blank" rel="noreferrer">
@@ -618,9 +789,11 @@ function App() {
           <div className="hero-copy">
             <p className="eyebrow hero-eyebrow">{t.hero.eyebrow}</p>
             <h1 id="hero-title">
-              <span>{t.hero.titleStart}</span>{' '}
-              <em>{t.hero.titleEmphasis}</em>{' '}
-              <span>{t.hero.titleEnd}</span>
+              {t.hero.titleStart && <span>{t.hero.titleStart}</span>}
+              {t.hero.titleStart && t.hero.titleEmphasis && ' '}
+              {t.hero.titleEmphasis && <em>{t.hero.titleEmphasis}</em>}
+              {t.hero.titleEmphasis && t.hero.titleEnd && ' '}
+              {t.hero.titleEnd && <span>{t.hero.titleEnd}</span>}
             </h1>
             <p className="hero-intro">{t.hero.body}</p>
             <div className="hero-actions">
@@ -648,7 +821,7 @@ function App() {
             >
               <img src={featuredVideo.thumbnail_url} alt="" />
               <span className="hero-media-play"><PlayIcon /></span>
-              <span className="hero-media-label">{featuredVideo.source_type === 'instagram' ? 'Reel' : 'Video'} · {featuredVideo.language}</span>
+              <span className="hero-media-label">{featuredVideo.source_type === 'instagram' ? t.ui.reelLabel : t.ui.videoLabel} · {featuredVideo.language}</span>
             </button>
             <div className="note-copy">
               <h2>{featuredTitle}</h2>
@@ -777,9 +950,9 @@ function App() {
             <div className="portrait-placeholder" role="img" aria-label={t.story.portraitAlt}>
               <span className="portrait-halo" aria-hidden="true" />
               <img className="portrait-image" src={brand.profileImageUrl} alt="" />
-              <span className="portrait-note">Portrait / 01</span>
+              <span className="portrait-note">{t.story.portraitLabel}</span>
             </div>
-            <p>{localizedDisplayName} · {brand.location}</p>
+            <p>{localizedDisplayName} · {localizedLocation}</p>
           </div>
 
           <div className="story-copy" data-reveal>
@@ -822,25 +995,25 @@ function App() {
       <footer className="site-footer">
         <div className="footer-main">
           <div className="footer-identity">
-            <Monogram logoUrl={brand.logoUrl} label={localizedDisplayName} wordmark={language === 'ka' ? 'მაიკლ' : 'MIKLE'} />
+            <Monogram logoUrl={brand.logoUrl} label={localizedDisplayName} wordmark={localizedWordmark} backToTop={t.ui.backToTop} />
             <div>
               <strong>{localizedDisplayName}</strong>
               <span>{t.footer}</span>
             </div>
           </div>
           <a className="footer-social" href={brand.instagramUrl} target="_blank" rel="noreferrer">
-            Instagram · @mikle.hyw
+            {t.ui.footerSocial} · {brand.instagramHandle}
             <ArrowIcon diagonal />
           </a>
           <a className="footer-top" href="#top">{t.close.top} ↑</a>
         </div>
         <div className="footer-legal">
           <p>{t.disclaimer}</p>
-          <span>© {new Date().getFullYear()} {localizedDisplayName} · <a href="/admin">Studio</a></span>
+          <span>© {new Date().getFullYear()} {localizedDisplayName} · <a href="/admin">{t.ui.studioLabel}</a></span>
         </div>
       </footer>
 
-        {activeVideo && <VideoPlayer video={activeVideo} language={language} onClose={() => setActiveVideo(null)} />}
+        {activeVideo && <VideoPlayer video={activeVideo} language={language} labels={t.player} onClose={() => setActiveVideo(null)} />}
       </div>
     </>
   )

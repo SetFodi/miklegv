@@ -5,10 +5,16 @@ import { instagramEmbedUrl } from '../data'
 type VideoPlayerProps = {
   video: VideoItem
   language: Language
+  labels: {
+    nowWatching: string
+    close: string
+    unsupported: string
+    viewInstagram: string
+  }
   onClose: () => void
 }
 
-export default function VideoPlayer({ video, language, onClose }: VideoPlayerProps) {
+export default function VideoPlayer({ video, language, labels, onClose }: VideoPlayerProps) {
   const title = language === 'ka' ? video.title_ka : video.title_en
   const description = language === 'ka' ? video.description_ka : video.description_en
 
@@ -38,10 +44,10 @@ export default function VideoPlayer({ video, language, onClose }: VideoPlayerPro
       >
         <div className="video-dialog-bar">
           <div>
-            <span>{language === 'ka' ? 'ახლა უყურებ' : 'Now watching'}</span>
+            <span>{labels.nowWatching}</span>
             <strong id="video-dialog-title">{title}</strong>
           </div>
-          <button type="button" onClick={onClose} aria-label={language === 'ka' ? 'დახურვა' : 'Close player'}>
+          <button type="button" onClick={onClose} aria-label={labels.close}>
             <span />
             <span />
           </button>
@@ -62,7 +68,7 @@ export default function VideoPlayer({ video, language, onClose }: VideoPlayerPro
                 type={video.source_url.toLowerCase().endsWith('.webm') ? 'video/webm' : 'video/mp4'}
               />
               {video.fallback_url && <source src={video.fallback_url} type="video/mp4" />}
-              {language === 'ka' ? 'თქვენი ბრაუზერი ვიდეოს ვერ აჩვენებს.' : 'Your browser cannot play this video.'}
+              {labels.unsupported}
             </video>
           )}
         </div>
@@ -74,7 +80,7 @@ export default function VideoPlayer({ video, language, onClose }: VideoPlayerPro
             <span>{video.language}</span>
             {video.source_type === 'instagram' && (
               <a href={video.source_url} target="_blank" rel="noreferrer">
-                {language === 'ka' ? 'Instagram-ზე ნახვა ↗' : 'View on Instagram ↗'}
+                {labels.viewInstagram}
               </a>
             )}
           </div>

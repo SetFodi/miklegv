@@ -532,7 +532,7 @@ html[data-language='ka'] .header-follow {
   position: relative;
   z-index: 1;
   align-self: center;
-  max-width: 58rem;
+  max-width: 50rem;
 }
 
 .eyebrow {
@@ -558,17 +558,17 @@ html[data-language='ka'] .eyebrow {
 
 .hero h1 {
   margin: 0;
-  max-width: 55rem;
+  max-width: 49rem;
   font-family: var(--font-display);
-  font-size: clamp(4rem, 7.25vw, 8.25rem);
+  font-size: clamp(3.8rem, 5.8vw, 7rem);
   font-weight: 430;
-  letter-spacing: -0.055em;
-  line-height: 0.86;
+  letter-spacing: -0.05em;
+  line-height: 0.9;
 }
 
 html[data-language='ka'] .hero h1 {
-  max-width: 62rem;
-  font-size: clamp(3.4rem, 6.2vw, 7.1rem);
+  max-width: 52rem;
+  font-size: clamp(3.2rem, 5.3vw, 6.2rem);
   font-weight: 600;
   letter-spacing: -0.055em;
   line-height: 0.98;
@@ -2293,8 +2293,8 @@ html[data-language='ka'] .footer-legal {
   .hero::before { display: none; }
 
   .hero h1 {
-    font-size: clamp(3.6rem, 18vw, 5.2rem);
-    line-height: 0.89;
+    font-size: clamp(3.35rem, 15.5vw, 4.75rem);
+    line-height: 0.93;
   }
 
   html[data-language='ka'] .hero h1 {

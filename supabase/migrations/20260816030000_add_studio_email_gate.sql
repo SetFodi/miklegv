@@ -1,4 +1,4 @@
--- Reject unapproved Studio emails before Supabase creates a user or sends a link.
+-- Reject unapproved Studio emails before sign-in or password recovery.
 create or replace function public.is_studio_email_allowed(candidate_email text)
 returns boolean
 language sql
@@ -15,4 +15,3 @@ $$;
 
 revoke all on function public.is_studio_email_allowed(text) from public;
 grant execute on function public.is_studio_email_allowed(text) to anon, authenticated;
-

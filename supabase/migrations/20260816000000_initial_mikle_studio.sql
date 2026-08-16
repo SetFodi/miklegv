@@ -52,7 +52,7 @@ $$;
 revoke all on function public.is_site_admin() from public;
 grant execute on function public.is_site_admin() to anon, authenticated;
 
--- Check the private allowlist before sending a magic link. This keeps admin
+-- Check the private allowlist before any Studio auth action. This keeps admin
 -- addresses in Postgres instead of exposing them in the public JavaScript bundle.
 create or replace function public.is_studio_email_allowed(candidate_email text)
 returns boolean

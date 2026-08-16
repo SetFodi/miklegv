@@ -17,7 +17,7 @@ npm run build
 
 ## Mikle Studio
 
-The private, non-technical content manager lives at `/admin`. Once connected to Supabase, Mikle can sign in with an approved email link and manage videos, thumbnails, publishing, ordering, bilingual page copy, the six health pillars, his biography, profile image, and logo. See [`CMS_SETUP.md`](./CMS_SETUP.md) for the one-time setup.
+The private, non-technical content manager lives at `/admin`. Once connected to Supabase, Mikle can sign in with an approved email and password and manage videos, thumbnails, publishing, ordering, bilingual page copy, the six health pillars, his biography, profile image, logo, and account password. See [`CMS_SETUP.md`](./CMS_SETUP.md) for the one-time setup.
 
 ## Project content
 

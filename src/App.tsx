@@ -393,7 +393,54 @@ function Monogram({
   )
 }
 
+type PreloaderPhase = 'visible' | 'leaving' | 'hidden'
+
+function SitePreloader({ phase, logoUrl }: { phase: PreloaderPhase; logoUrl: string }) {
+  if (phase === 'hidden') return null
+
+  return (
+    <div className={`site-preloader is-${phase}`} role="status" aria-label="Preparing Mikle Health">
+      <div className="preloader-topline">
+        <span>MIKLE / WHOLE HEALTH</span>
+        <span>06 PILLARS · 01 SYSTEM</span>
+      </div>
+
+      <div className="preloader-center">
+        <div className="preloader-orbit" aria-hidden="true">
+          <span className="preloader-ring preloader-ring-outer" />
+          <span className="preloader-ring preloader-ring-inner" />
+          <div className="preloader-nutrients">
+            {Array.from({ length: 6 }, (_, index) => <i key={index} />)}
+          </div>
+          <div className="preloader-core">
+            <span />
+            <img src={logoUrl} alt="" />
+          </div>
+        </div>
+
+        <div className="preloader-copy">
+          <span>Nourish · Move · Recover</span>
+          <strong>Feeding the<br />whole system.</strong>
+        </div>
+      </div>
+
+      <div className="preloader-progress" aria-hidden="true">
+        <span>Health is connected.</span>
+        <div><i /></div>
+        <b>100</b>
+      </div>
+    </div>
+  )
+}
+
 function App() {
+  const [preloaderPhase, setPreloaderPhase] = useState<PreloaderPhase>(() => {
+    try {
+      return window.sessionStorage.getItem('mikle-preloader-seen') === '1' ? 'hidden' : 'visible'
+    } catch {
+      return 'visible'
+    }
+  })
   const [language, setLanguage] = useState<Language>(() => {
     const saved = window.localStorage.getItem('mikle-language')
     return saved === 'ka' ? 'ka' : 'en'
@@ -432,6 +479,34 @@ function App() {
     () => ({ '--active-index': selectedIndex } as React.CSSProperties),
     [selectedIndex],
   )
+
+  useEffect(() => {
+    if (preloaderPhase === 'hidden') return
+
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    const leaveAfter = reduceMotion ? 180 : 1450
+    const hideAfter = reduceMotion ? 260 : 2200
+
+    document.body.classList.add('preloader-active')
+    const leaveTimer = window.setTimeout(() => setPreloaderPhase('leaving'), leaveAfter)
+    const hideTimer = window.setTimeout(() => {
+      setPreloaderPhase('hidden')
+      document.body.classList.remove('preloader-active')
+      try {
+        window.sessionStorage.setItem('mikle-preloader-seen', '1')
+      } catch {
+        // Storage can be unavailable in privacy-restricted browsers.
+      }
+    }, hideAfter)
+
+    return () => {
+      window.clearTimeout(leaveTimer)
+      window.clearTimeout(hideTimer)
+      document.body.classList.remove('preloader-active')
+    }
+    // The opening sequence intentionally runs once for the lifetime of this page.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   useEffect(() => {
     document.documentElement.lang = language
@@ -485,7 +560,9 @@ function App() {
   const closeMenu = () => setMenuOpen(false)
 
   return (
-    <div className="site-shell" id="top">
+    <>
+      <SitePreloader phase={preloaderPhase} logoUrl={brand.logoUrl} />
+      <div className={`site-shell ${preloaderPhase === 'hidden' ? 'is-ready' : 'is-preloading'}`} id="top">
       <a className="skip-link" href="#main">Skip to content</a>
 
       <header className={`site-header ${scrolled ? 'is-scrolled' : ''}`}>
@@ -763,8 +840,9 @@ function App() {
         </div>
       </footer>
 
-      {activeVideo && <VideoPlayer video={activeVideo} language={language} onClose={() => setActiveVideo(null)} />}
-    </div>
+        {activeVideo && <VideoPlayer video={activeVideo} language={language} onClose={() => setActiveVideo(null)} />}
+      </div>
+    </>
   )
 }
 

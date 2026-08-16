@@ -4,7 +4,7 @@ import { defaultBrand, defaultVideos, type Language, type SiteBrand, type VideoI
 import { isCmsConfigured, loadSiteConfig, supabase, uploadMedia } from '../lib/cms'
 import './admin.css'
 
-type StudioTab = 'videos' | 'content' | 'brand'
+type StudioTab = 'videos' | 'content' | 'brand' | 'account'
 type AuthState = 'loading' | 'signed-out' | 'checking' | 'authorized' | 'unauthorized'
 
 const emptyVideo: VideoItem = {
@@ -133,8 +133,39 @@ function SetupRequired() {
   )
 }
 
-function SignIn({ onSent }: { onSent: (email: string) => void }) {
+function friendlyAuthError(message: string) {
+  const normalizedMessage = message.toLowerCase()
+
+  if (normalizedMessage.includes('invalid login credentials')) {
+    return 'That email and password don’t match. If you have never set a password, use “Set or reset password” below.'
+  }
+  if (normalizedMessage.includes('rate limit')) {
+    return 'Too many emails were requested recently. Give the inbox a short breather, then try once more.'
+  }
+  if (normalizedMessage.includes('email not confirmed')) {
+    return 'That account still needs its one-time email confirmation before it can sign in.'
+  }
+
+  return message
+}
+
+async function isAllowedStudioEmail(email: string) {
+  if (!supabase) return false
+
+  const { data, error } = await supabase.rpc('is_studio_email_allowed', {
+    candidate_email: email,
+  })
+
+  if (error) throw error
+  return Boolean(data)
+}
+
+function SignIn() {
   const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [showPassword, setShowPassword] = useState(false)
+  const [resetMode, setResetMode] = useState(false)
+  const [resetSent, setResetSent] = useState(false)
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
 
@@ -145,29 +176,89 @@ function SignIn({ onSent }: { onSent: (email: string) => void }) {
     setError('')
 
     const normalizedEmail = email.trim().toLowerCase()
-    const { data: isAllowed, error: accessError } = await supabase.rpc('is_studio_email_allowed', {
-      candidate_email: normalizedEmail,
-    })
+    try {
+      if (!(await isAllowedStudioEmail(normalizedEmail))) {
+        setError('That email isn’t on the guest list. Nice try, mystery nutritionist.')
+        return
+      }
 
-    if (accessError) {
-      setBusy(false)
+      const { error: authError } = await supabase.auth.signInWithPassword({
+        email: normalizedEmail,
+        password,
+      })
+      if (authError) setError(friendlyAuthError(authError.message))
+    } catch {
       setError('The doorman is taking a hydration break. Try again in a moment.')
-      return
-    }
-
-    if (!isAllowed) {
+    } finally {
       setBusy(false)
-      setError('That email isn’t on the guest list. Nice try, mystery nutritionist.')
-      return
     }
+  }
 
-    const { error: authError } = await supabase.auth.signInWithOtp({
-      email: normalizedEmail,
-      options: { emailRedirectTo: `${window.location.origin}/admin` },
-    })
-    setBusy(false)
-    if (authError) setError(authError.message)
-    else onSent(normalizedEmail)
+  const requestPasswordReset = async (event: FormEvent) => {
+    event.preventDefault()
+    if (!supabase) return
+    setBusy(true)
+    setError('')
+
+    const normalizedEmail = email.trim().toLowerCase()
+
+    try {
+      if (!(await isAllowedStudioEmail(normalizedEmail))) {
+        setError('That email isn’t on the guest list. Nice try, mystery nutritionist.')
+        return
+      }
+
+      const { error: authError } = await supabase.auth.resetPasswordForEmail(normalizedEmail, {
+        redirectTo: `${window.location.origin}/admin`,
+      })
+      if (authError) setError(friendlyAuthError(authError.message))
+      else setResetSent(true)
+    } catch {
+      setError('The doorman is taking a hydration break. Try again in a moment.')
+    } finally {
+      setBusy(false)
+    }
+  }
+
+  if (resetSent) {
+    return (
+      <main className="studio-gate">
+        <div className="studio-gate-card studio-login">
+          <StudioLogo logoUrl={defaultBrand.logoUrl} />
+          <span className="studio-kicker">One last email</span>
+          <h1>Open the reset link.</h1>
+          <p>
+            We sent a password setup link to <strong>{email.trim().toLowerCase()}</strong>. After you choose a password,
+            regular Studio logins will not send email.
+          </p>
+          <button className="studio-quiet" type="button" onClick={() => setResetSent(false)}>Send it again</button>
+          <button className="studio-text-button" type="button" onClick={() => { setResetMode(false); setResetSent(false); setError('') }}>Back to sign in</button>
+        </div>
+      </main>
+    )
+  }
+
+  if (resetMode) {
+    return (
+      <main className="studio-gate">
+        <form className="studio-gate-card studio-login" onSubmit={requestPasswordReset}>
+          <StudioLogo logoUrl={defaultBrand.logoUrl} />
+          <span className="studio-kicker">Password setup</span>
+          <h1>Choose it once.<br />Use it from then on.</h1>
+          <p>We’ll send one secure link so you can set a first password or replace a forgotten one.</p>
+          <label>
+            Approved email address
+            <input type="email" value={email} onChange={(event) => setEmail(event.target.value)} required autoComplete="email" autoFocus />
+          </label>
+          {error && <p className="studio-error" role="alert">{error}</p>}
+          <button className="studio-primary" type="submit" disabled={busy}>
+            {busy ? 'Preparing link…' : 'Send password setup link'}
+          </button>
+          <button className="studio-text-button" type="button" onClick={() => { setResetMode(false); setError('') }}>I know my password</button>
+          <a href="/">← Return to the website</a>
+        </form>
+      </main>
+    )
   }
 
   return (
@@ -176,18 +267,172 @@ function SignIn({ onSent }: { onSent: (email: string) => void }) {
         <StudioLogo logoUrl={defaultBrand.logoUrl} />
         <span className="studio-kicker">Private access</span>
         <h1>Welcome back,<br />Mikle.</h1>
-        <p>Enter your approved email. We’ll send a secure sign-in link—no password to remember.</p>
+        <p>Sign in with the Studio password. This browser will remember the session until you choose to sign out.</p>
         <label>
           Email address
-          <input type="email" value={email} onChange={(event) => setEmail(event.target.value)} required autoComplete="email" />
+          <input type="email" value={email} onChange={(event) => setEmail(event.target.value)} required autoComplete="username" autoFocus />
         </label>
-        {error && <p className="studio-error">{error}</p>}
+        <label>
+          Password
+          <span className="studio-password-field">
+            <input
+              type={showPassword ? 'text' : 'password'}
+              value={password}
+              onChange={(event) => setPassword(event.target.value)}
+              required
+              minLength={8}
+              autoComplete="current-password"
+            />
+            <button type="button" onClick={() => setShowPassword((current) => !current)} aria-label={showPassword ? 'Hide password' : 'Show password'}>
+              {showPassword ? 'Hide' : 'Show'}
+            </button>
+          </span>
+        </label>
+        {error && <p className="studio-error" role="alert">{error}</p>}
         <button className="studio-primary" type="submit" disabled={busy}>
-          {busy ? 'Sending…' : 'Email me a sign-in link'}
+          {busy ? 'Opening Studio…' : 'Enter Studio'}
         </button>
+        <button className="studio-text-button" type="button" onClick={() => { setResetMode(true); setError('') }}>Set or reset password</button>
         <a href="/">← Return to the website</a>
       </form>
     </main>
+  )
+}
+
+function PasswordSetup({ onComplete }: { onComplete: () => void }) {
+  const [password, setPassword] = useState('')
+  const [confirmation, setConfirmation] = useState('')
+  const [showPassword, setShowPassword] = useState(false)
+  const [busy, setBusy] = useState(false)
+  const [error, setError] = useState('')
+
+  const savePassword = async (event: FormEvent) => {
+    event.preventDefault()
+    if (!supabase) return
+    setError('')
+
+    if (password.length < 10) {
+      setError('Use at least 10 characters. A password manager can make a strong one for you.')
+      return
+    }
+    if (password !== confirmation) {
+      setError('Those passwords don’t match yet.')
+      return
+    }
+
+    setBusy(true)
+    const { error: updateError } = await supabase.auth.updateUser({ password })
+    setBusy(false)
+
+    if (updateError) {
+      setError(friendlyAuthError(updateError.message))
+      return
+    }
+
+    window.history.replaceState({}, document.title, window.location.pathname)
+    onComplete()
+  }
+
+  return (
+    <main className="studio-gate">
+      <form className="studio-gate-card studio-login" onSubmit={savePassword}>
+        <StudioLogo logoUrl={defaultBrand.logoUrl} />
+        <span className="studio-kicker">Secure the Studio</span>
+        <h1>Make it memorable.<br />Keep it private.</h1>
+        <p>Set a password with at least 10 characters. Once saved, you’ll use email and password for future logins.</p>
+        <label>
+          New password
+          <span className="studio-password-field">
+            <input
+              type={showPassword ? 'text' : 'password'}
+              value={password}
+              onChange={(event) => setPassword(event.target.value)}
+              required
+              minLength={10}
+              autoComplete="new-password"
+              autoFocus
+            />
+            <button type="button" onClick={() => setShowPassword((current) => !current)}>{showPassword ? 'Hide' : 'Show'}</button>
+          </span>
+        </label>
+        <label>
+          Confirm password
+          <input type={showPassword ? 'text' : 'password'} value={confirmation} onChange={(event) => setConfirmation(event.target.value)} required minLength={10} autoComplete="new-password" />
+        </label>
+        {error && <p className="studio-error" role="alert">{error}</p>}
+        <button className="studio-primary" type="submit" disabled={busy}>{busy ? 'Saving password…' : 'Save password & enter'}</button>
+      </form>
+    </main>
+  )
+}
+
+function AccountSecurity({ email }: { email: string }) {
+  const [password, setPassword] = useState('')
+  const [confirmation, setConfirmation] = useState('')
+  const [busy, setBusy] = useState(false)
+  const [message, setMessage] = useState('')
+  const [isError, setIsError] = useState(false)
+
+  const savePassword = async (event: FormEvent) => {
+    event.preventDefault()
+    if (!supabase) return
+    setMessage('')
+    setIsError(false)
+
+    if (password.length < 10) {
+      setIsError(true)
+      setMessage('Use at least 10 characters.')
+      return
+    }
+    if (password !== confirmation) {
+      setIsError(true)
+      setMessage('Those passwords don’t match yet.')
+      return
+    }
+
+    setBusy(true)
+    const { error } = await supabase.auth.updateUser({ password })
+    setBusy(false)
+
+    if (error) {
+      setIsError(true)
+      setMessage(friendlyAuthError(error.message))
+      return
+    }
+
+    setPassword('')
+    setConfirmation('')
+    setMessage('Password saved. Future logins can use it immediately.')
+  }
+
+  return (
+    <section className="studio-section">
+      <div className="studio-section-intro">
+        <div><span>Account security</span><h2>Keep the keys to the Studio simple and private.</h2></div>
+      </div>
+      <div className="studio-account-grid">
+        <article className="studio-account-card">
+          <span>Signed-in owner</span>
+          <h3>{email}</h3>
+          <p>The session stays remembered on this browser. Use Sign out only on a shared device.</p>
+        </article>
+        <form className="studio-account-card studio-account-form" onSubmit={savePassword}>
+          <span>Set or change password</span>
+          <h3>A fresh Studio password</h3>
+          <p>If you originally entered with a magic link, set your permanent password here before signing out.</p>
+          <label>
+            New password
+            <input type="password" value={password} onChange={(event) => setPassword(event.target.value)} minLength={10} required autoComplete="new-password" />
+          </label>
+          <label>
+            Confirm password
+            <input type="password" value={confirmation} onChange={(event) => setConfirmation(event.target.value)} minLength={10} required autoComplete="new-password" />
+          </label>
+          {message && <p className={isError ? 'studio-error' : 'studio-success'} role="status">{message}</p>}
+          <button className="studio-primary" type="submit" disabled={busy}>{busy ? 'Saving…' : 'Save new password'}</button>
+        </form>
+      </div>
+    </section>
   )
 }
 
@@ -332,7 +577,8 @@ function VideoEditor({
 
 function AdminApp() {
   const [authState, setAuthState] = useState<AuthState>(isCmsConfigured ? 'loading' : 'signed-out')
-  const [sentTo, setSentTo] = useState('')
+  const [passwordSetup, setPasswordSetup] = useState(false)
+  const [signedInEmail, setSignedInEmail] = useState('')
   const [tab, setTab] = useState<StudioTab>('videos')
   const [videos, setVideos] = useState<VideoItem[]>(defaultVideos)
   const [copy, setCopy] = useState(defaultCopy)
@@ -349,12 +595,14 @@ function AdminApp() {
     const checkUser = async () => {
       const { data } = await client.auth.getSession()
       if (!data.session) {
+        setSignedInEmail('')
         setAuthState('signed-out')
         return
       }
 
       setAuthState('checking')
       const signedInEmail = data.session.user.email ?? ''
+      setSignedInEmail(signedInEmail)
       const { data: admins } = await client
         .from('site_admins')
         .select('email')
@@ -365,7 +613,10 @@ function AdminApp() {
     }
 
     checkUser()
-    const { data: subscription } = client.auth.onAuthStateChange(() => checkUser())
+    const { data: subscription } = client.auth.onAuthStateChange((event) => {
+      if (event === 'PASSWORD_RECOVERY') setPasswordSetup(true)
+      window.setTimeout(() => void checkUser(), 0)
+    })
     return () => subscription.subscription.unsubscribe()
   }, [])
 
@@ -388,21 +639,11 @@ function AdminApp() {
   if (authState === 'loading' || authState === 'checking') {
     return <main className="studio-loading"><img src={defaultBrand.logoUrl} alt="" /><span>Opening Mikle Studio…</span></main>
   }
+  if (passwordSetup && authState === 'authorized') {
+    return <PasswordSetup onComplete={() => setPasswordSetup(false)} />
+  }
   if (authState === 'signed-out') {
-    if (sentTo) {
-      return (
-        <main className="studio-gate">
-          <div className="studio-gate-card studio-login">
-            <StudioLogo logoUrl={defaultBrand.logoUrl} />
-            <span className="studio-kicker">Check your inbox</span>
-            <h1>Your secure link is on its way.</h1>
-            <p>We sent it to <strong>{sentTo}</strong>. The link returns directly to the private studio.</p>
-            <button className="studio-quiet" type="button" onClick={() => setSentTo('')}>Use another email</button>
-          </div>
-        </main>
-      )
-    }
-    return <SignIn onSent={setSentTo} />
+    return <SignIn />
   }
   if (authState === 'unauthorized') {
     return (
@@ -459,6 +700,7 @@ function AdminApp() {
           <button className={tab === 'videos' ? 'is-active' : ''} onClick={() => setTab('videos')}><span>01</span> Videos</button>
           <button className={tab === 'content' ? 'is-active' : ''} onClick={() => setTab('content')}><span>02</span> Website text</button>
           <button className={tab === 'brand' ? 'is-active' : ''} onClick={() => setTab('brand')}><span>03</span> Profile & brand</button>
+          <button className={tab === 'account' ? 'is-active' : ''} onClick={() => setTab('account')}><span>04</span> Account</button>
         </nav>
         <div className="studio-sidebar-footer">
           <a href="/" target="_blank">View live website ↗</a>
@@ -470,7 +712,7 @@ function AdminApp() {
         <header className="studio-header">
           <div>
             <span>Owner workspace</span>
-            <h1>{tab === 'videos' ? 'Field notes' : tab === 'content' ? 'Website words' : 'Identity'}</h1>
+            <h1>{tab === 'videos' ? 'Field notes' : tab === 'content' ? 'Website words' : tab === 'brand' ? 'Identity' : 'Security'}</h1>
           </div>
           <div className="studio-status"><i /> Website live · {publishedCount} videos</div>
         </header>
@@ -595,6 +837,8 @@ function AdminApp() {
             </div>
           </section>
         )}
+
+        {tab === 'account' && <AccountSecurity email={signedInEmail} />}
 
         {tab === 'brand' && (
           <section className="studio-section">

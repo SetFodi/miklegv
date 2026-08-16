@@ -578,7 +578,7 @@ function VideoEditor({
         </label>
         <label>
           Georgian title
-          <input value={draft.title_ka} onChange={(event) => update('title_ka', event.target.value)} required />
+          <input lang="ka" value={draft.title_ka} onChange={(event) => update('title_ka', event.target.value)} required />
         </label>
         <label>
           English summary
@@ -586,7 +586,7 @@ function VideoEditor({
         </label>
         <label>
           Georgian summary
-          <textarea value={draft.description_ka} onChange={(event) => update('description_ka', event.target.value)} rows={4} />
+          <textarea lang="ka" value={draft.description_ka} onChange={(event) => update('description_ka', event.target.value)} rows={4} />
         </label>
         <label>
           Video source
@@ -702,6 +702,11 @@ function AdminApp() {
     })
   }, [authState])
 
+  useEffect(() => {
+    if (authState !== 'authorized') return
+    window.scrollTo({ top: 0, behavior: 'auto' })
+  }, [authState, tab])
+
   const publishedCount = useMemo(() => videos.filter((video) => video.published).length, [videos])
 
   if (!isCmsConfigured) return <SetupRequired />
@@ -766,10 +771,10 @@ function AdminApp() {
       <aside className="studio-sidebar">
         <StudioLogo logoUrl={brand.logoUrl} />
         <nav aria-label="Studio navigation">
-          <button className={tab === 'videos' ? 'is-active' : ''} onClick={() => setTab('videos')}><span>01</span> Videos</button>
-          <button className={tab === 'content' ? 'is-active' : ''} onClick={() => setTab('content')}><span>02</span> Website text</button>
-          <button className={tab === 'brand' ? 'is-active' : ''} onClick={() => setTab('brand')}><span>03</span> Profile & brand</button>
-          <button className={tab === 'account' ? 'is-active' : ''} onClick={() => setTab('account')}><span>04</span> Account</button>
+          <button data-mobile-label="Videos" className={tab === 'videos' ? 'is-active' : ''} onClick={() => setTab('videos')}><span>01</span> Videos</button>
+          <button data-mobile-label="Website" className={tab === 'content' ? 'is-active' : ''} onClick={() => setTab('content')}><span>02</span> Website text</button>
+          <button data-mobile-label="Brand" className={tab === 'brand' ? 'is-active' : ''} onClick={() => setTab('brand')}><span>03</span> Profile & brand</button>
+          <button data-mobile-label="Account" className={tab === 'account' ? 'is-active' : ''} onClick={() => setTab('account')}><span>04</span> Account</button>
         </nav>
         <div className="studio-sidebar-footer">
           <a href="/" target="_blank">View live website ↗</a>
@@ -834,8 +839,8 @@ function AdminApp() {
               <button className="studio-primary" type="button" onClick={saveSiteConfig} disabled={saving}>{saving ? 'Saving…' : 'Save & publish'}</button>
             </div>
             <div className="studio-language-tabs">
-              <button className={editLanguage === 'en' ? 'is-active' : ''} onClick={() => setEditLanguage('en')}>English</button>
-              <button className={editLanguage === 'ka' ? 'is-active' : ''} onClick={() => setEditLanguage('ka')}>ქართული</button>
+              <button type="button" className={editLanguage === 'en' ? 'is-active' : ''} onClick={() => setEditLanguage('en')}>English</button>
+              <button type="button" className={editLanguage === 'ka' ? 'is-active' : ''} onClick={() => setEditLanguage('ka')}>ქართული</button>
             </div>
             <div className="studio-content-editor" lang={editLanguage === 'ka' ? 'ka' : 'en'}>
               {contentSections.map((section, sectionIndex) => (
@@ -928,11 +933,11 @@ function AdminApp() {
               </div>
               <div className="studio-brand-fields">
                 <label>Display name — English<input value={brand.displayName} onChange={(event) => setBrand((current) => ({ ...current, displayName: event.target.value }))} /></label>
-                <label>Display name — Georgian<input value={brand.displayNameKa ?? ''} onChange={(event) => setBrand((current) => ({ ...current, displayNameKa: event.target.value }))} /></label>
+                <label>Display name — Georgian<input lang="ka" value={brand.displayNameKa ?? ''} onChange={(event) => setBrand((current) => ({ ...current, displayNameKa: event.target.value }))} /></label>
                 <label>Short wordmark — English<input value={brand.wordmark} onChange={(event) => setBrand((current) => ({ ...current, wordmark: event.target.value }))} /></label>
-                <label>Short wordmark — Georgian<input value={brand.wordmarkKa} onChange={(event) => setBrand((current) => ({ ...current, wordmarkKa: event.target.value }))} /></label>
+                <label>Short wordmark — Georgian<input lang="ka" value={brand.wordmarkKa} onChange={(event) => setBrand((current) => ({ ...current, wordmarkKa: event.target.value }))} /></label>
                 <label>Location — English<input value={brand.location} onChange={(event) => setBrand((current) => ({ ...current, location: event.target.value }))} /></label>
-                <label>Location — Georgian<input value={brand.locationKa} onChange={(event) => setBrand((current) => ({ ...current, locationKa: event.target.value }))} /></label>
+                <label>Location — Georgian<input lang="ka" value={brand.locationKa} onChange={(event) => setBrand((current) => ({ ...current, locationKa: event.target.value }))} /></label>
                 <label>Instagram handle<input value={brand.instagramHandle} onChange={(event) => setBrand((current) => ({ ...current, instagramHandle: event.target.value }))} placeholder="@mikle.hyw" /></label>
                 <label>Instagram profile URL<input type="url" value={brand.instagramUrl} onChange={(event) => setBrand((current) => ({ ...current, instagramUrl: event.target.value }))} /></label>
               </div>

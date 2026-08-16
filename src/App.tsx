@@ -700,9 +700,7 @@ function App() {
     }
     socialImage.setAttribute('content', absoluteProfileImage)
 
-    document.querySelectorAll<HTMLLinkElement>('link[rel="icon"], link[rel="shortcut icon"], link[rel="apple-touch-icon"]')
-      .forEach((link) => link.setAttribute('href', brand.logoUrl))
-  }, [brand.logoUrl, brand.profileImageUrl, t.seo])
+  }, [brand.profileImageUrl, t.seo])
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24)

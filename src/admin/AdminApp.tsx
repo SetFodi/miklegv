@@ -104,7 +104,7 @@ const contentSections = [
     fields: [
       ['story.number', 'Section number', false],
       ['story.eyebrow', 'Small heading', false],
-      ['story.title', 'Section title', false],
+      ['story.title', 'Section title', true],
       ['story.quote', 'Pull quote', true],
       ['story.body', 'Biography', true],
       ['story.credentials', 'Credentials heading', false],
@@ -837,7 +837,7 @@ function AdminApp() {
               <button className={editLanguage === 'en' ? 'is-active' : ''} onClick={() => setEditLanguage('en')}>English</button>
               <button className={editLanguage === 'ka' ? 'is-active' : ''} onClick={() => setEditLanguage('ka')}>ქართული</button>
             </div>
-            <div className="studio-content-editor">
+            <div className="studio-content-editor" lang={editLanguage === 'ka' ? 'ka' : 'en'}>
               {contentSections.map((section, sectionIndex) => (
                 <details key={section.title} open={sectionIndex === 0}>
                   <summary><span>{String(sectionIndex + 1).padStart(2, '0')}</span>{section.title}<i>+</i></summary>

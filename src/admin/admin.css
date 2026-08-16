@@ -736,6 +736,14 @@
   grid-column: 1 / -1;
 }
 
+.studio-content-editor[lang='ka'] .studio-content-fields input,
+.studio-content-editor[lang='ka'] .studio-content-fields textarea,
+.studio-content-editor[lang='ka'] .studio-pillar-editor h3,
+.studio-content-editor[lang='ka'] .studio-pillar-editor textarea {
+  font-family: 'Noto Sans Georgian', 'Arial Unicode MS', sans-serif;
+  line-height: 1.7;
+}
+
 .studio-pillar-editor {
   padding: 0 0 2rem 3rem;
   display: grid;

@@ -466,13 +466,16 @@ html[data-language='ka'] .header-follow {
   gap: 0.38rem;
 }
 
-.language-switcher button {
+.language-switcher a {
+  color: inherit;
+  text-decoration: none;
   opacity: 0.46;
   transition: opacity 180ms ease;
 }
 
-.language-switcher button:hover,
-.language-switcher button.is-active {
+.language-switcher a:hover,
+.language-switcher a:focus-visible,
+.language-switcher a.is-active {
   opacity: 1;
 }
 

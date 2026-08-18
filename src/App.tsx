@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import VideoPlayer from './components/VideoPlayer'
 import { defaultBrand, defaultVideos, type Language, type SiteBrand, type VideoItem } from './data'
 import { loadPublishedVideos, loadSiteConfig } from './lib/cms'
+import { HTML_LOCALES, LANGUAGE_PATHS, languageFromPathname, updateSeoHead } from './seo'
 
 export type PillarKey = 'nutrition' | 'sleep' | 'movement' | 'light' | 'stress' | 'recovery'
 
@@ -134,9 +135,9 @@ export const defaultCopy: Record<Language, Copy> = {
       studioLabel: 'Studio',
     },
     seo: {
-      title: 'Mikle — Health as a system',
-      description: 'Mikle Gvianidze explores nutrition, sleep, movement, light, stress, and recovery as one connected system.',
-      socialDescription: 'Practical, bilingual health education for stronger everyday living.',
+      title: 'Mikle Gvianidze | Nutrition, Movement & Whole Health',
+      description: 'Explore practical health education from Mikle Gvianidze on nutrition, sleep, movement, light, stress, and recovery—in English and Georgian.',
+      socialDescription: 'Practical whole-health education from Mikle Gvianidze, in English and Georgian.',
     },
     player: {
       nowWatching: 'Now watching',
@@ -299,9 +300,9 @@ export const defaultCopy: Record<Language, Copy> = {
       studioLabel: 'სტუდია',
     },
     seo: {
-      title: 'მაიკლი — ჯანმრთელობა როგორც სისტემა',
-      description: 'მაიკლ გვიანიძე კვებას, ძილს, მოძრაობას, სინათლეს, სტრესსა და აღდგენას ერთ მთლიან სისტემად განიხილავს.',
-      socialDescription: 'პრაქტიკული, ორენოვანი ჯანმრთელობის განათლება ყოველდღიური ცხოვრების გასაუმჯობესებლად.',
+      title: 'მაიკლ გვიანიძე | კვება, მოძრაობა და ჯანმრთელობა',
+      description: 'მაიკლ გვიანიძის პრაქტიკული საგანმანათლებლო მასალები კვებაზე, ძილზე, მოძრაობაზე, სინათლეზე, სტრესსა და აღდგენაზე — ქართულად და ინგლისურად.',
+      socialDescription: 'მაიკლ გვიანიძის პრაქტიკული მასალები ჯანმრთელობაზე — ქართულად და ინგლისურად.',
     },
     player: {
       nowWatching: 'ახლა უყურებ',
@@ -460,6 +461,13 @@ function mergeDefined<T>(defaults: T, stored: unknown): T {
 export function mergeCopyWithDefaults(stored: unknown): Record<Language, Copy> {
   const merged = mergeDefined(defaultCopy, stored)
 
+  if (merged.en.seo.title === 'Mikle — Health as a system') {
+    merged.en.seo = defaultCopy.en.seo
+  }
+  if (merged.ka.seo.title === 'მაიკლი — ჯანმრთელობა როგორც სისტემა') {
+    merged.ka.seo = defaultCopy.ka.seo
+  }
+
   if (
     merged.en.hero.titleStart === 'Health isn’t a'
     && merged.en.hero.titleEmphasis === 'checklist.'
@@ -579,17 +587,23 @@ function SitePreloader({ phase, logoUrl, copy }: { phase: PreloaderPhase; logoUr
   )
 }
 
-function App() {
+type AppProps = {
+  initialLanguage?: Language
+}
+
+function App({ initialLanguage }: AppProps = {}) {
   const [preloaderPhase, setPreloaderPhase] = useState<PreloaderPhase>(() => {
+    if (typeof window === 'undefined') return 'hidden'
     try {
       return window.sessionStorage.getItem('mikle-preloader-seen') === '1' ? 'hidden' : 'visible'
     } catch {
       return 'visible'
     }
   })
-  const [language, setLanguage] = useState<Language>(() => {
-    const saved = window.localStorage.getItem('mikle-language')
-    return saved === 'ka' ? 'ka' : 'en'
+  const [language] = useState<Language>(() => {
+    if (initialLanguage) return initialLanguage
+    if (typeof window === 'undefined') return 'en'
+    return languageFromPathname(window.location.pathname) ?? 'en'
   })
   const [selectedPillar, setSelectedPillar] = useState<PillarKey>('nutrition')
   const [menuOpen, setMenuOpen] = useState(false)
@@ -661,7 +675,7 @@ function App() {
   }, [])
 
   useEffect(() => {
-    document.documentElement.lang = language
+    document.documentElement.lang = HTML_LOCALES[language]
     document.documentElement.dataset.language = language
     window.localStorage.setItem('mikle-language', language)
   }, [language])
@@ -686,21 +700,8 @@ function App() {
   }, [])
 
   useEffect(() => {
-    document.title = t.seo.title
-    document.querySelector('meta[name="description"]')?.setAttribute('content', t.seo.description)
-    document.querySelector('meta[property="og:title"]')?.setAttribute('content', t.seo.title)
-    document.querySelector('meta[property="og:description"]')?.setAttribute('content', t.seo.socialDescription)
-
-    const absoluteProfileImage = new URL(brand.profileImageUrl, window.location.origin).href
-    let socialImage = document.querySelector<HTMLMetaElement>('meta[property="og:image"]')
-    if (!socialImage) {
-      socialImage = document.createElement('meta')
-      socialImage.setAttribute('property', 'og:image')
-      document.head.appendChild(socialImage)
-    }
-    socialImage.setAttribute('content', absoluteProfileImage)
-
-  }, [brand.profileImageUrl, t.seo])
+    updateSeoHead(language, t.seo, brand)
+  }, [brand, language, t.seo])
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24)
@@ -756,23 +757,25 @@ function App() {
 
         <div className="header-actions">
           <div className="language-switcher" aria-label={t.ui.selectLanguage}>
-            <button
+            <a
               className={language === 'en' ? 'is-active' : ''}
-              type="button"
-              onClick={() => setLanguage('en')}
-              aria-pressed={language === 'en'}
+              href={LANGUAGE_PATHS.en}
+              hrefLang={HTML_LOCALES.en}
+              lang={HTML_LOCALES.en}
+              aria-current={language === 'en' ? 'page' : undefined}
             >
               {t.ui.englishShort}
-            </button>
+            </a>
             <span>/</span>
-            <button
+            <a
               className={language === 'ka' ? 'is-active' : ''}
-              type="button"
-              onClick={() => setLanguage('ka')}
-              aria-pressed={language === 'ka'}
+              href={LANGUAGE_PATHS.ka}
+              hrefLang={HTML_LOCALES.ka}
+              lang={HTML_LOCALES.ka}
+              aria-current={language === 'ka' ? 'page' : undefined}
             >
               {t.ui.georgianShort}
-            </button>
+            </a>
           </div>
           <a className="header-follow" href={brand.instagramUrl} target="_blank" rel="noreferrer">
             <span>{t.nav.follow}</span>
@@ -817,7 +820,7 @@ function App() {
               aria-label={t.hero.figureAction}
               onClick={() => setActiveVideo(featuredVideo)}
             >
-              <img src={featuredVideo.thumbnail_url} alt="" />
+              <img src={featuredVideo.thumbnail_url} alt="" fetchPriority="high" decoding="async" />
               <span className="hero-media-play"><PlayIcon /></span>
               <span className="hero-media-label">{featuredVideo.source_type === 'instagram' ? t.ui.reelLabel : t.ui.videoLabel} · {featuredVideo.language}</span>
             </button>
@@ -929,7 +932,7 @@ function App() {
                 style={{ '--delay': `${index * 100}ms` } as React.CSSProperties}
               >
                 <div className="note-card-visual">
-                  <img src={video.thumbnail_url} alt="" />
+                  <img src={video.thumbnail_url} alt="" loading="lazy" decoding="async" />
                   <span className="card-index">/{String(index + 1).padStart(3, '0')}</span>
                   <span className="card-play"><PlayIcon /></span>
                 </div>
@@ -951,7 +954,7 @@ function App() {
           <div className="story-visual" data-reveal>
             <div className="portrait-placeholder" role="img" aria-label={t.story.portraitAlt}>
               <span className="portrait-halo" aria-hidden="true" />
-              <img className="portrait-image" src={brand.profileImageUrl} alt="" />
+              <img className="portrait-image" src={brand.profileImageUrl} alt="" loading="lazy" decoding="async" />
               <span className="portrait-note">{t.story.portraitLabel}</span>
             </div>
             <p>{localizedDisplayName} · {localizedLocation}</p>
